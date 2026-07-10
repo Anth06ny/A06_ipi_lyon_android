@@ -9,7 +9,7 @@ data class Weather(
     val temp: Double,
     val speed: Double,
     val description: String,
-    val icon: String
+    var icon: String
 ) {
     fun getResume() = """
         Il fait $temp° à $name (id=$id) avec un vent de $speed m/s

@@ -58,7 +58,14 @@ object WeatherApiDataSourceEasy {
             throw Exception("Erreur API: ${response.status} - ${response.bodyAsText()}")
         }
 
-        return response.body<List<Weather>>()
+        val res =  response.body<List<Weather>>()
+
+        res.forEach {
+            it.icon = "https://openweathermap.org/img/wn/${it.icon}@4x.png"
+        }
+
+        return res
+
     }
 
 

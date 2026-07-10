@@ -60,21 +60,34 @@ object WeatherApiDataSource {
         }
 
         //Parsing du JSON
-        val res =  response.body<WeatherAPIResultDTO>()
+        val res = response.body<WeatherAPIResultDTO>()
 
-        val list = ArrayList<Weather>()
-        for(r in res.list){
-            list += Weather(
+        //version ancien
+//        val list = ArrayList<Weather>()
+//        for (r in res.list) {
+//            val icon = r.weather.firstOrNull()?.icon ?: "-"
+//            list += Weather(
+//                id = r.id,
+//                name = r.name,
+//                temp = r.main.temp,
+//                speed = r.wind.speed,
+//                description = r.weather.firstOrNull()?.description ?: "-",
+//                icon = "https://openweathermap.org/img/wn/$icon@4x.png"
+//            )
+//        }
+
+        //Version lambda expression
+        return res.list.map { r: WeatherDTO ->
+            val icon = r.weather.firstOrNull()?.icon ?: "-"
+            Weather(
                 id = r.id,
                 name = r.name,
                 temp = r.main.temp,
                 speed = r.wind.speed,
                 description = r.weather.firstOrNull()?.description ?: "-",
-                icon = r.weather.firstOrNull()?.icon ?: "-",
+                icon = "https://openweathermap.org/img/wn/$icon@4x.png"
             )
         }
-
-        return list
     }
 
 
@@ -87,15 +100,19 @@ object WeatherApiDataSource {
 /* -------------------------------- */
 @Serializable
 data class WeatherAPIResultDTO(val list: List<WeatherDTO>)
+
 @Serializable
 data class WeatherDTO(
     val id: Int, val name: String, val main: TempDTO, val wind: WindDTO,
     val weather: List<DescriptionDTO>
 )
+
 @Serializable
 data class TempDTO(val temp: Double)
+
 @Serializable
-data class WindDTO(val speed: Double)
+data class WindDTO(var speed: Double)
+
 @Serializable
 data class DescriptionDTO(val description: String, val icon: String)
 
